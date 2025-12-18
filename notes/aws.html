@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 bg-white text-slate-800 font-sans">
+    <h1 class="text-3xl font-black text-orange-500 italic mb-4">05_AWS_CLOUD.IAM</h1>
+    
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="p-3 border-2 border-slate-100 rounded-xl">
+            <h3 class="font-bold text-orange-600">Compute</h3>
+            <ul class="text-xs list-disc ml-4"><li>EC2 (Servers)</li><li>Lambda (Serverless)</li><li>ECS/EKS (Containers)</li></ul>
+        </div>
+        <div class="p-3 border-2 border-slate-100 rounded-xl">
+            <h3 class="font-bold text-orange-600">Storage</h3>
+            <ul class="text-xs list-disc ml-4"><li>S3 (Objects)</li><li>EBS (Block Storage)</li><li>RDS (Databases)</li></ul>
+        </div>
+    </div>
+
+    <h2 class="font-800 mb-2">AWS CLI Snippets</h2>
+    <div class="bg-slate-900 text-white p-4 rounded-lg font-mono text-sm">
+        aws s3 ls                      # List buckets<br>
+        aws ec2 describe-instances     # View running servers<br>
+        aws configure                  # Set up credentials
+    </div>
+        <footer class="mt-12 pt-6 border-t border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+        End of Document — BrewOps Documentation Hub
+    </footer>
+</body>
+</html>

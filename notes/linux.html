@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.6; }
+        code { font-family: 'Courier New', Courier, monospace; background: #f4f4f4; padding: 2px 4px; border-radius: 4px; color: #d63384; }
+        .cmd-block { background: #1a1a1a; color: #00ff00; padding: 1rem; border-radius: 8px; font-family: monospace; margin: 1rem 0; position: relative; }
+        .cmd-block::before { content: "Terminal"; position: absolute; top: -10px; left: 10px; background: #6F4E37; color: white; padding: 0 8px; font-size: 10px; border-radius: 4px; font-weight: bold; }
+        .section-card { border-left: 4px solid #D9C6F4; padding-left: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body class="p-6 bg-white text-slate-800">
+
+    <header class="mb-8 border-b-2 border-slate-100 pb-4">
+        <h1 class="text-3xl font-black text-purple-600 tracking-tight italic">01_LINUX_FOR_DEVOPS.sh</h1>
+        <p class="text-slate-500 font-medium">Mastering the foundation of Infrastructure as Code.</p>
+    </header>
+
+    <div class="section-card">
+        <h2 class="text-xl font-800 mb-2 flex items-center gap-2">📂 File System & Navigation</h2>
+        <p class="text-sm mb-2">The first step in DevOps is knowing where your configs live.</p>
+        <div class="cmd-block">
+            ls -R          # Recursive list<br>
+            pwd            # Print working directory<br>
+            cd /etc        # Move to configuration directory<br>
+            mkdir -p p1/p2 # Create nested directories
+        </div>
+    </div>
+
+    <div class="section-card" style="border-left-color: #F7A8B8;">
+        <h2 class="text-xl font-800 mb-2 flex items-center gap-2">🔐 Permissions & Ownership</h2>
+        <p class="text-sm mb-2">Crucial for securing Docker sockets and SSH keys.</p>
+        <div class="cmd-block">
+            chmod 400 key.pem   # Secure SSH key (Read only by owner)<br>
+            chown root:docker   # Change user and group ownership<br>
+            ls -la              # Check hidden files and permissions
+        </div>
+        <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-xs italic">
+            <b>Note:</b> In DevOps, always follow the "Principle of Least Privilege".
+        </div>
+    </div>
+
+    <div class="section-card" style="border-left-color: #B6E3FF;">
+        <h2 class="text-xl font-800 mb-2 flex items-center gap-2">⚙️ Process Management</h2>
+        <p class="text-sm mb-2">Monitoring app health and stopping runaway scripts.</p>
+        <div class="cmd-block">
+            ps aux | grep nginx  # Find Nginx process ID<br>
+            top                  # Real-time system monitor<br>
+            kill -9 [PID]        # Force kill a process<br>
+            systemctl status k3s # Check service status
+        </div>
+    </div>
+
+    <div class="section-card" style="border-left-color: #F8F3B6;">
+        <h2 class="text-xl font-800 mb-2 flex items-center gap-2">🌐 Networking & Connectivity</h2>
+        <p class="text-sm mb-2">Debugging connection issues between microservices.</p>
+        <div class="cmd-block">
+            curl -I google.com   # Check HTTP headers<br>
+            netstat -tunlp       # See all active ports<br>
+            ping -c 4 8.8.8.8    # Test connectivity<br>
+            ssh-copy-id user@ip  # Enable passwordless login
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h2 class="text-xl font-800 mb-2 flex items-center gap-2">📦 Package Management</h2>
+        <div class="cmd-block">
+            sudo apt update && sudo apt upgrade -y<br>
+            sudo apt install docker-ce docker-compose-plugin
+        </div>
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+        End of Document — BrewOps Documentation Hub
+    </footer>
+
+</body>
+</html>

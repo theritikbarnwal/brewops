@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrewOps.OS | Resizable Windows</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FAF7F2; overflow: hidden; height: 100vh; margin: 0; }
+        
+        .window {
+            position: absolute; background: white; border: 2px solid #000; border-radius: 12px;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.1); display: flex; flex-direction: column;
+            min-width: 250px; min-height: 150px; overflow: hidden;
+            z-index: 100; opacity: 1; transform: scale(1);
+            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* NEW OPENING ANIMATION: Slide up and fade in */
+        .win-opening { animation: win-slide-up 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+        @keyframes win-slide-up {
+            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .exit-anim-close { transform: scale(0.9) !important; opacity: 0 !important; pointer-events: none; }
+        .exit-anim-minimize { transform: translateY(20px) scale(0.9) !important; opacity: 0 !important; pointer-events: none; }
+
+        .window-header {
+            padding: 10px 14px; border-bottom: 2px solid #000; display: flex;
+            justify-content: space-between; align-items: center; cursor: move;
+            user-select: none;
+        }
+
+        .btn-ctrl {
+            width: 22px; height: 22px; border: 1.5px solid #000; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+            font-weight: bold; background: white; cursor: pointer;
+        }
+
+        /* RESIZE HANDLE */
+        .resizer {
+            width: 15px; height: 15px; background: #000; position: absolute;
+            right: 0; bottom: 0; cursor: nwse-resize;
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+
+        #switcher {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98); border: 3px solid #000; border-radius: 20px;
+            padding: 24px; z-index: 9999; box-shadow: 20px 20px 0px rgba(0,0,0,0.2); width: 400px;
+        }
+        .switcher-item {
+            padding: 12px; border-radius: 10px; margin-bottom: 6px; border: 2px solid transparent;
+            display: flex; align-items: center; gap: 12px; font-weight: 800;
+        }
+        .switcher-item.active { border-color: #000; background-color: #F8F3B6; }
+
+        .bg-pink { background-color: #F7A8B8; }
+        .bg-purple { background-color: #D9C6F4; }
+        .bg-teal { background-color: #B6E3FF; }
+        .bg-blue { background-color: #A5B4FC; }
+        .bg-orange { background-color: #FDBA74; }
+    </style>
+</head>
+<body>
+
+    <div id="desktop" class="p-10 h-full relative">
+        <nav class="flex justify-between items-center relative z-[50]">
+            <span class="text-3xl font-black tracking-tighter text-[#6F4E37]">BrewOps.</span>
+            <button onclick="goHome()" class="bg-black text-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:invert transition">
+                ACTIVE TABS: <span id="tab-count">0 TABS</span>
+            </button>
+        </nav>
+
+        <div class="mt-16 max-w-6xl">
+            <h1 class="text-7xl font-black tracking-tighter leading-[0.85] mb-10 uppercase">DevOps<br><span class="text-stone-300">Journal.</span></h1>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <button onclick="openWin('Linux', 'purple', 'notes/linux.html')" class="text-left bg-white border-2 border-black p-5 rounded-[20px] hover:-translate-y-1 transition-all">
+                    <span class="text-2xl block mb-2">🐧</span>
+                    <h3 class="font-black italic text-sm uppercase">01_Linux</h3>
+                </button>
+                <button onclick="openWin('Docker', 'pink', 'notes/docker.html')" class="text-left bg-white border-2 border-black p-5 rounded-[20px] hover:-translate-y-1 transition-all">
+                    <span class="text-2xl block mb-2">🐋</span>
+                    <h3 class="font-black italic text-sm uppercase">02_Docker</h3>
+                </button>
+                <button onclick="openWin('K8s', 'teal', 'notes/k8s.html')" class="text-left bg-white border-2 border-black p-5 rounded-[20px] hover:-translate-y-1 transition-all">
+                    <span class="text-2xl block mb-2">☸️</span>
+                    <h3 class="font-black italic text-sm uppercase">03_K8s</h3>
+                </button>
+                <button onclick="openWin('Net', 'blue', 'notes/networking.html')" class="text-left bg-white border-2 border-black p-5 rounded-[20px] hover:-translate-y-1 transition-all">
+                    <span class="text-2xl block mb-2">🌐</span>
+                    <h3 class="font-black italic text-sm uppercase">04_Net</h3>
+                </button>
+                <button onclick="openWin('AWS', 'orange', 'notes/aws.html')" class="text-left bg-white border-2 border-black p-5 rounded-[20px] hover:-translate-y-1 transition-all">
+                    <span class="text-2xl block mb-2">☁️</span>
+                    <h3 class="font-black italic text-sm uppercase">05_AWS</h3>
+                </button>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-10 text-stone-400 text-[12px] font-black uppercase tracking-widest">
+            ⌘/CTRL + SPACE to Switch Tabs
+        </div>
+
+        <div id="window-layer" class="absolute inset-0 pointer-events-none"></div>
+    </div>
+
+    <div id="switcher">
+        <div class="text-[10px] font-black text-stone-300 mb-4 tracking-widest px-2 uppercase">Switch To</div>
+        <div id="switcher-list"></div>
+    </div>
+
+    <script>
+        let zIndex = 100;
+        let activeWindows = [];
+        let switcherIndex = 0;
+        let modKey = false;
+
+        function updateTabCountUI() {
+            const count = activeWindows.length;
+            document.getElementById('tab-count').innerText = count === 1 ? '1 TAB' : `${count} TABS`;
+        }
+
+        function openWin(title, theme, url) {
+            const existing = activeWindows.find(w => w.title === title);
+            if (existing) { restoreWindow(title); return; }
+
+            const id = 'win-' + Date.now();
+            const win = document.createElement('div');
+            win.id = id;
+            win.className = `window win-opening pointer-events-auto`;
+            
+            const w = Math.min(window.innerWidth * 0.8, 800);
+            const h = Math.min(window.innerHeight * 0.7, 500);
+            const left = (window.innerWidth / 2) - (w / 2);
+            const top = (window.innerHeight / 2) - (h / 2);
+
+            win.style.width = w + 'px';
+            win.style.height = h + 'px';
+            win.style.left = left + 'px';
+            win.style.top = top + 'px';
+            win.style.zIndex = zIndex++;
+
+            win.innerHTML = `
+                <div class="window-header bg-${theme}">
+                    <span class="text-[10px] font-black uppercase tracking-widest">${title}</span>
+                    <div class="flex gap-2">
+                        <button class="btn-ctrl" onclick="minimizeWin('${id}')">—</button>
+                        <button class="btn-ctrl hover:bg-red-500 hover:text-white transition-colors" onclick="closeWin('${id}', '${title}')">×</button>
+                    </div>
+                </div>
+                <div class="flex-grow bg-white relative">
+                    <iframe src="${url}" class="w-full h-full border-none"></iframe>
+                    <div class="resizer"></div>
+                </div>
+            `;
+
+            document.getElementById('window-layer').appendChild(win);
+            activeWindows.push({ id, title, theme });
+            makeDraggable(win);
+            makeResizable(win); // Initialize Resizing
+            updateTabCountUI();
+        }
+
+        function closeWin(id, title) {
+            const win = document.getElementById(id);
+            win.classList.add('exit-anim-close');
+            setTimeout(() => {
+                win.remove();
+                activeWindows = activeWindows.filter(w => w.title !== title);
+                updateTabCountUI();
+            }, 200);
+        }
+
+        function minimizeWin(id) {
+            const win = document.getElementById(id);
+            win.classList.add('exit-anim-minimize');
+            setTimeout(() => { 
+                win.style.display = 'none';
+            }, 200);
+        }
+
+        function restoreWindow(title) {
+            if (title === 'Home') { goHome(); return; }
+            const winData = activeWindows.find(w => w.title === title);
+            if (!winData) return;
+            const win = document.getElementById(winData.id);
+            win.style.display = 'flex';
+            win.classList.remove('exit-anim-minimize', 'exit-anim-close', 'win-opening');
+            win.style.zIndex = zIndex++;
+        }
+
+        function goHome() {
+            activeWindows.forEach(w => { document.getElementById(w.id).style.display = 'none'; });
+        }
+
+        // SWICHTER LOGIC
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Control' || e.key === 'Meta') modKey = true;
+            if (modKey && e.code === 'Space') {
+                e.preventDefault();
+                showSwitcher();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Control' || e.key === 'Meta') {
+                modKey = false;
+                hideSwitcher();
+            }
+        });
+
+        function showSwitcher() {
+            const switcher = document.getElementById('switcher');
+            const list = document.getElementById('switcher-list');
+            switcher.style.display = 'block';
+            const options = [{title: 'Home', theme: 'black', isHome: true}, ...activeWindows];
+            switcherIndex = (switcherIndex + 1) % options.length;
+            list.innerHTML = options.map((opt, i) => `
+                <div class="switcher-item ${i === switcherIndex ? 'active' : ''}">
+                    <div class="w-6 h-6 rounded bg-${opt.theme} flex items-center justify-center border border-black/10">
+                        ${opt.isHome ? '🏠' : ''}
+                    </div>
+                    <span class="text-sm uppercase tracking-tighter">${opt.title}</span>
+                </div>
+            `).join('');
+        }
+
+        function hideSwitcher() {
+            const s = document.getElementById('switcher');
+            if (s.style.display === 'none') return;
+            const options = [{title: 'Home', isHome: true}, ...activeWindows];
+            const sel = options[switcherIndex];
+            s.style.display = 'none';
+            if (sel) restoreWindow(sel.title);
+        }
+
+        // INTERACTION LOGIC
+        function makeDraggable(el) {
+            const h = el.querySelector('.window-header');
+            h.onmousedown = (e) => {
+                let x = e.clientX, y = e.clientY;
+                el.style.zIndex = zIndex++;
+                document.onmousemove = (e) => {
+                    el.style.left = (el.offsetLeft - (x - e.clientX)) + "px";
+                    el.style.top = (el.offsetTop - (y - e.clientY)) + "px";
+                    x = e.clientX; y = e.clientY;
+                };
+                document.onmouseup = () => document.onmousemove = null;
+            };
+        }
+
+        function makeResizable(el) {
+            const resizer = el.querySelector('.resizer');
+            resizer.onmousedown = (e) => {
+                e.preventDefault();
+                e.stopPropagation(); // Prevent drag from triggering
+                let x = e.clientX, y = e.clientY;
+                let w = parseInt(document.defaultView.getComputedStyle(el).width, 10);
+                let h = parseInt(document.defaultView.getComputedStyle(el).height, 10);
+
+                document.onmousemove = (e) => {
+                    el.style.width = (w + e.clientX - x) + 'px';
+                    el.style.height = (h + e.clientY - y) + 'px';
+                };
+                document.onmouseup = () => document.onmousemove = null;
+            };
+        }
+    </script>
+</body>
+</html>

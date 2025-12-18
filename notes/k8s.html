@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 bg-white text-slate-800">
+    <h1 class="text-3xl font-black text-indigo-600 italic mb-4">03_KUBERNETES.YAML</h1>
+    
+    <div class="flex gap-2 mb-6">
+        <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">Pods</span>
+        <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">Deployments</span>
+        <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">Services</span>
+    </div>
+
+    <h2 class="font-800 mb-2">Kubectl Power User Commands</h2>
+    <div class="bg-slate-900 text-indigo-300 p-4 rounded-lg font-mono text-sm mb-4">
+        kubectl get pods -A            # List all pods in all namespaces<br>
+        kubectl apply -f deployment.yaml # Deploy resource<br>
+        kubectl logs -f [pod-name]     # Stream logs<br>
+        kubectl describe node [name]   # Debug node health
+    </div>
+
+    <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+        <p class="text-xs text-indigo-900"><b>Pro Tip:</b> Use <code>alias k='kubectl'</code> to save time during production outages!</p>
+    </div>
+
+        <footer class="mt-12 pt-6 border-t border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+        End of Document — BrewOps Documentation Hub
+    </footer>
+
+</body>
+</html>
